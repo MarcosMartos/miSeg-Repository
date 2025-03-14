@@ -4,6 +4,8 @@ import Usuario from "../models/Usuario.js";
 
 // Registrar usuario
 export const register = async (req, res) => {
+  console.log("✅ Endpoint /register alcanzado");
+
   const { nombre, email, password, rol } = req.body;
 
   try {

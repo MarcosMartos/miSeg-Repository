@@ -15,6 +15,9 @@ db.sequelize
   .catch((err) => console.error("❌ Error al conectar a PostgreSQL:", err));
 
 app.use("/api/auth", authRoutes);
+app.get("/test", (req, res) => {
+  res.send("✅ Ruta de prueba funcionando");
+});
 
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
