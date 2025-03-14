@@ -1,13 +1,22 @@
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
 dotenv.config();
 
+// ✅ Definir __filename y __dirname manualmente
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
-const config = require("../config/config.json")[env];
+
+// Leer configuración desde config.json
+const config = JSON.parse(
+  fs.readFileSync(path.resolve("src/config/config.json"))
+)[env];
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
@@ -21,11 +30,8 @@ fs.readdirSync(__dirname)
     (file) =>
       file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
   )
-  .forEach((file) => {
-    const model = require(path.join(__dirname, file)).default(
-      sequelize,
-      Sequelize.DataTypes
-    );
+  .forEach(async (file) => {
+    const { default: model } = await import(`./${file}`);
     db[model.name] = model;
   });
 
